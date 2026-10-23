@@ -7,10 +7,12 @@ module hyaena_alu(
     output reg overflow,
     output reg carry,
     output reg negative,
-    output reg parity   
+    output reg parity
+
 ); 
 
     reg [32:0] tmp;
+    reg b_sign;
     wire [32:0] a_33 = {1'b0, a};
     wire [32:0] b_33 = {1'b0, b};
     wire [5:0] shift_ctr = b[4:0];
@@ -32,8 +34,19 @@ module hyaena_alu(
             4'hA: tmp = {1'b0, (a_merged >> shift_ctr) & 32'hFFFFFFFF}; // ror
             4'hB: tmp = {1'b0, mul_result[31:0]}; // mul
             4'hC: tmp = {1'b0, mul_result[63:32]}; // mulh
+            default: tmp = 33h'0;
         endcase
 
         result = tmp[31:0];
+        zero = result == 32'b0; //zero
+        carry = tmp[32]; // carry
+        negative = result[31]; // negative
+        parity = tmp[0]; //parity
+        b_sign = (operator == 4h'2) ? ~b[31] : b[31];
+        // if op = sub , reverse b
+        overflow = (a[31] && b_sign && ~result[31]) || (~a[31] && ~b_sign && result[31]); //overflow
+        // overlofw ( positive + positive = negative) or (negative + negative = positive)
+
+
     end
 endmodule
