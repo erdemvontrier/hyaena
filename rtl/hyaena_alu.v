@@ -20,20 +20,20 @@ module hyaena_alu(
         tmp = 33'b0;
 
         case(operator)
-        
             4'h1: tmp = a_33 + b_33; // add
             4'h2: tmp = a_33 - b_33; // sub
             4'h3: tmp = a_33 & b_33; // and
             4'h4: tmp = a_33 | b_33; // or
             4'h5: tmp = a_33 ^ b_33; // xor
-            4'h6: tmp = {1'b0 ~ a}; // not
+            4'h6: tmp = {1'b0, ~a}; // not
             4'h7: tmp = a_33 << shift_ctr; // shl
             4'h8: tmp = a_33 >> shift_ctr;// shr
-            4'h9: tmp = {1'b0, $signed(a)>>> shift_ctr}; //asr
+            4'h9: tmp = {1'b0, $signed(a)>>> shift_ctr}; // asr
             4'hA: tmp = {1'b0, (a_merged >> shift_ctr) & 32'hFFFFFFFF}; // ror
-            4'hB: tmp = {1'b0, mul_result[31:0]}; //mul
-            4'hC: tmp = {1'b0, mul_result[63:32]}; //mulh
-        
+            4'hB: tmp = {1'b0, mul_result[31:0]}; // mul
+            4'hC: tmp = {1'b0, mul_result[63:32]}; // mulh
         endcase
+
+        result = tmp[31:0];
     end
 endmodule
