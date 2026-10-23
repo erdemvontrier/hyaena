@@ -58,6 +58,10 @@ module hyaena_alu_tb ();
     endtask
 
     initial begin
+        `ifdef DUMP
+            $dumpfile("output.vcd");
+            $dumpvars(0, hyaena_alu_tb);
+        `endif
         tb_init;
         tb_test_add;
         $display("Error count: ", error_ctr);
