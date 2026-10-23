@@ -8,7 +8,6 @@ module hyaena_alu(
     output reg carry,
     output reg negative,
     output reg parity
-
 ); 
 
     reg [32:0] tmp;
@@ -18,22 +17,36 @@ module hyaena_alu(
     wire [5:0] shift_ctr = b[4:0];
     wire [63:0] a_merged = {a,a};
     wire [63:0] mul_result = a * b;
+
+    localparam OP_ADD  = 4'h1;
+    localparam OP_SUB  = 4'h2;
+    localparam OP_AND  = 4'h3;
+    localparam OP_OR   = 4'h4;
+    localparam OP_XOR  = 4'h5;
+    localparam OP_NOT  = 4'h6;
+    localparam OP_SHL  = 4'h7;
+    localparam OP_SHR  = 4'h8;
+    localparam OP_ASR  = 4'h9;
+    localparam OP_ROR  = 4'hA;
+    localparam OP_MUL  = 4'hB;
+    localparam OP_MULH = 4'hC;
+
     always @(*) begin
         tmp = 33'b0;
 
         case(operator)
-            4'h1: tmp = a_33 + b_33; // add
-            4'h2: tmp = a_33 - b_33; // sub
-            4'h3: tmp = a_33 & b_33; // and
-            4'h4: tmp = a_33 | b_33; // or
-            4'h5: tmp = a_33 ^ b_33; // xor
-            4'h6: tmp = {1'b0, ~a}; // not
-            4'h7: tmp = a_33 << shift_ctr; // shl
-            4'h8: tmp = a_33 >> shift_ctr;// shr
-            4'h9: tmp = {1'b0, $signed(a)>>> shift_ctr}; // asr
-            4'hA: tmp = {1'b0, (a_merged >> shift_ctr) & 32'hFFFFFFFF}; // ror
-            4'hB: tmp = {1'b0, mul_result[31:0]}; // mul
-            4'hC: tmp = {1'b0, mul_result[63:32]}; // mulh
+            OP_ADD: tmp = a_33 + b_33; // add
+            OP_SUB: tmp = a_33 - b_33; // sub
+            OP_AND: tmp = a_33 & b_33; // and
+            OP_OR: tmp = a_33 | b_33; // or
+            OP_XOR: tmp = a_33 ^ b_33; // xor
+            OP_NOT: tmp = {1'b0, ~a}; // not
+            OP_SHL: tmp = a_33 << shift_ctr; // shl
+            OP_SHR: tmp = a_33 >> shift_ctr;// shr
+            OP_ASR: tmp = {1'b0, $signed(a)>>> shift_ctr}; // asr
+            OP_ROR: tmp = {1'b0, (a_merged >> shift_ctr) & 32'hFFFFFFFF}; // ror
+            OP_MUL: tmp = {1'b0, mul_result[31:0]}; // mul
+            OP_MULH: tmp = {1'b0, mul_result[63:32]}; // mulh
             default: tmp = 33h'0;
         endcase
 
@@ -46,7 +59,6 @@ module hyaena_alu(
         // if op = sub , reverse b
         overflow = (a[31] && b_sign && ~result[31]) || (~a[31] && ~b_sign && result[31]); //overflow
         // overlofw ( positive + positive = negative) or (negative + negative = positive)
-
 
     end
 endmodule
