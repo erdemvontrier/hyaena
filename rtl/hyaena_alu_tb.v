@@ -65,6 +65,9 @@ module hyaena_alu_tb ();
         tb_init;
         tb_test_add;
         $display("Error count: ", error_ctr);
+        if(error_ctr == 0) begin
+            $display("Happy happy happy 😺\n");
+        end
         $finish;
     end
 endmodule

@@ -47,7 +47,7 @@ module hyaena_alu(
             OP_ROR: tmp = {1'b0, (a_merged >> shift_ctr) & 32'hFFFFFFFF}; // ror
             OP_MUL: tmp = {1'b0, mul_result[31:0]}; // mul
             OP_MULH: tmp = {1'b0, mul_result[63:32]}; // mulh
-            default: tmp = 33h'0;
+            default: tmp = 33'h0;
         endcase
 
         result = tmp[31:0];
@@ -55,7 +55,7 @@ module hyaena_alu(
         carry = tmp[32]; // carry
         negative = result[31]; // negative
         parity = tmp[0]; //parity
-        b_sign = (operator == 4h'2) ? ~b[31] : b[31];
+        b_sign = (operator == 4'h2) ? ~b[31] : b[31];
         // if op = sub , reverse b
         overflow = (a[31] && b_sign && ~result[31]) || (~a[31] && ~b_sign && result[31]); //overflow
         // overlofw ( positive + positive = negative) or (negative + negative = positive)
